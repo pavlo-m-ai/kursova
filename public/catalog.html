@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Каталог</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", sans-serif;
+      background-color: #4a4a4a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .catalog-container {
+      background-color: #5e5e5e;
+      padding: 2rem 3rem;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      width: 320px;
+    }
+
+    h1 {
+      color: white;
+      margin-bottom: 1rem;
+    }
+
+    #welcome {
+      color: white;
+      margin-bottom: 1.5rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0;
+      color: white;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+      background-color: #6c6c6c;
+      padding: 0.5rem;
+      border-radius: 5px;
+    }
+
+    .logout-btn {
+      background-color: #1d4ed8;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      margin-top: 1rem;
+    }
+
+    .logout-btn:hover {
+      background-color: #2563eb;
+    }
+  </style>
+</head>
+<body>
+  <div class="catalog-container">
+    <h1>Каталог</h1>
+    <p id="welcome">Завантаження...</p>
+    <ul>
+      <li>📦 Товар 1</li>
+      <li>📦 Товар 2</li>
+      <li>📦 Товар 3</li>
+    </ul>
+    <button class="logout-btn" id="logoutBtn">Вийти</button>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Не авторизований. Перенаправлення...");
+      window.location.href = "/index.html";
+    } else {
+      fetch("http://localhost:3000/profile", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error();
+          return res.json();
+        })
+        .then((data) => {
+          document.getElementById("welcome").textContent = `Вітаємо, ${data.email}!`;
+        })
+        .catch(() => {
+          alert("Сесія недійсна. Вхід знову потрібен.");
+          localStorage.removeItem("token");
+          window.location.href = "/index.html";
+        });
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await fetch("http://localhost:3000/logout", {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      localStorage.removeItem("token");
+      window.location.href = "/index.html";
+    });
+  </script>
+</body>
+</html>

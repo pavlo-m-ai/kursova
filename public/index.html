@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вхід</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="overlay"></div> <!-- Розмитий фон -->
+    <div class="container">
+        <h2>Вхід</h2>
+        <form id="login-form">
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Пароль" required>
+            <button type="submit">Увійти</button>
+        </form>
+        <p style="color: white;">Немає акаунту? <a href="register.html" style="color: #ffcc00;">Зареєструватися</a></p>
+    </div>
+
+    <script>
+        document.getElementById("login-form").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            const res = await fetch("/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                localStorage.setItem("token", data.token);
+                window.location.href = "catalog.html";
+            } else {
+                alert(data.message);
+            }
+        });
+    </script>
+</body>
+</html>
