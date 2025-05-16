@@ -61,5 +61,5 @@ app.get("/profile", (req, res) => {
 
 // Запуск сервера
 app.listen(process.env.PORT || 3000, () => {
-  console.log("🚀 Сервер працює на http://localhost:3000");
+  console.log("Сервер працює на http://localhost:3000");
 });
